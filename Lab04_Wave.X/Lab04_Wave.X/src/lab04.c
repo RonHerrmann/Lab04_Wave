@@ -15,11 +15,11 @@
 // signal parameter
 
 #define sineWaveFrequency_Hz 1
-#define sampleRate_s 1
+#define sampleRate_Hz 1
 #define minimalVoltage 1
 #define maximalVoltage -1
 
-#define getPR3(time) ((12.8e6 * time) / 256)
+#define getPR3(sampleRate) ((12.8e6 * (1/sampleRate)) / 256)
 
 
 /*
