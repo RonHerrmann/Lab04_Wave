@@ -15,11 +15,17 @@
 // signal parameter
 
 #define sineWaveFrequency_Hz 1
-#define sampleRate_Hz 1
-#define minimalVoltage 1
-#define maximalVoltage -1
+#define sampleRate_Hz 50
+#define minimalVoltage 3
+#define maximalVoltage 1
+
+// macros
 
 #define getPR3(sampleRate) ((12.8e6 * (1/sampleRate)) / 256)
+#define getSampleTime(sampleRate) (1/sampleRate)
+#define getAmplitude(minVolatage, maxVoltage) (((maxVoltage - minVoltage) / 2)*1000)
+#define getOmega(frequency) (2 * pi * frequency)
+#define getSinePeriodTime(frequency) (1/frequency)
 
 
 /*
@@ -30,6 +36,10 @@
 #define TCKPS_8   0x01
 #define TCKPS_64  0x02
 #define TCKPS_256 0x03
+
+
+volatile uint16_t V_out = 0;
+volatile uint16_t currentTime = 0;
 
 void timer_initialize()  // Timer 3
 {   
@@ -51,9 +61,15 @@ void timer_initialize()  // Timer 3
 void __attribute__((__interrupt__, __shadow__, __auto_psv__)) _T3Interrupt(void)
 {   
     
-    TOGGLELED(LED1_PORT);
+    currentTime = currentTime + getSampleTime(sampleRate_Hz);  // calculate time for sine wave
     
-    IFS0bits.T3IF = 0;  
+    TOGGLELED(LED1_PORT);       // toggle LED1
+    
+    V_out = getAmplitude(minimalVoltage, maximalVoltage) * sin(getOmega(sineWaveFrequency_Hz) * currentTime) + (minimalVoltage*1000);    // Vout = Vamplitude * sin(omega_signal * t) + Voffset, with omega_signal = 2 * pi * f_signal
+    
+    dac_convert_milli_volt(V_out);  // set output voltage to DAC
+    
+    IFS0bits.T3IF = 0;      // clear interupt service routin flag
 }
 
 /*
@@ -69,14 +85,13 @@ void main_loop()
     
     CLEARBIT(LED1_TRIS);   //set LED1 as output
     
-    while(TRUE) { 
+    while(TRUE) {   
         
-    uint16_t milliVolt = 0;    
-    
-    // Vout = Vamplitude * sin(omega_signal * t) + Voffset, with omega_signal = 2 * pi * f_signal
-        
-    dac_convert_milli_volt(milliVolt);  // set output voltage to DAC
-    
+        if(currentTime == getSinePeriodTime(sineWaveFrequency_Hz){
+            
+            currentTime = 0;        // restet current time, because one sine period is over 
+        }
+                
     }
 }
 
