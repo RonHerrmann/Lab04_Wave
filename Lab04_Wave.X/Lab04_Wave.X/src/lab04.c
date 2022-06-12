@@ -89,7 +89,7 @@ void main_loop()
         
         if(currentTime == getSinePeriodTime(sineWaveFrequency_Hz){
             
-            currentTime = 0;        // restet current time, because one sine period is over 
+            currentTime = 0;        // resetet current time, because one sine period is over 
         }
                 
     }
