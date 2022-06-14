@@ -72,4 +72,13 @@ void dac_convert_milli_volt(uint16_t milliVolt)
         Nop();
         SETBIT(DAC_SCK_PORT);  
     }
+    
+    SETBIT(DAC_CS_PORT);
+    CLEARBIT(DAC_SDI_PORT);
+    Nop();
+    
+    CLEARBIT(DAC_LDAC_PORT);
+    Nop();
+    Nop();
+    SETBIT(DAC_LDAC_PORT);
 }
