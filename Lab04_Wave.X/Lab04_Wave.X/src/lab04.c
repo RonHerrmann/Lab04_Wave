@@ -1,4 +1,4 @@
-#include "lab04.h"
+include "lab04.h"
 
 #include <xc.h>
 //do not change the order of the following 2 definitions
@@ -14,17 +14,17 @@
 
 // signal parameter
 
-#define sineWaveFrequency_Hz 2
-#define sampleRate_Hz 100
-#define minimalVoltage 1
-#define maximalVoltage 4
+#define sineWaveFrequency_Hz 8
+#define sampleRate_Hz 10000
+#define minimalVoltage 0.5
+#define maximalVoltage 2.5
 
 // macros
 
 #define pi 3.14159265
 #define getPR3(sampleRate) ((float) 12.8e6 * 1/sampleRate / 256)
 #define getSampleTime(sampleRate) ((float) 1/sampleRate)
-#define getAmplitude(minVoltage, maxVoltage) ( (float) (maxVoltage - minVoltage) * 500)   // x / 2 * 1000 equal to x * 500
+#define getAmplitude(minVoltage, maxVoltage) ((float) (maxVoltage - minVoltage) * 500)   // x / 2 * 1000 equal to x * 500
 #define getOmega(frequency) ((float) 2 * pi * frequency)
 #define getSinePeriodTime(frequency) ((float) 1/frequency)
 
@@ -67,7 +67,6 @@ void __attribute__((__interrupt__, __shadow__, __auto_psv__)) _T3Interrupt(void)
     TOGGLELED(LED1_PORT);       // toggle LED1
     
     V_out = (uint16_t) getAmplitude(minimalVoltage, maximalVoltage) * sinf(getOmega(sineWaveFrequency_Hz) * currentTime) + getAmplitude(minimalVoltage, maximalVoltage) + minimalVoltage*1000;    // Vout = Vamplitude * sin(omega_signal * t) + Voffset, with omega_signal = 2 * pi * f_signal
-    V_out |=  BV(12);  // settings for DAC.... Bit 15 to 0 (write ti DACA); Bit 14 don't care; Bit 13 to 0 (4.096V); Bit 12 to 1
     
     dac_convert_milli_volt(V_out);  // set output voltage to DAC
     
@@ -110,10 +109,11 @@ void main_loop()
       
     while(TRUE) {   
         
-        if(currentTime >= getSinePeriodTime(sineWaveFrequency_Hz)){
-            
-            currentTime = 0;        // reset current time, because one sine period is over 
-        }
+//        if(currentTime >= getSinePeriodTime(sineWaveFrequency_Hz)){
+//            
+//            currentTime = 0;        // reset current time, because one sine period is over 
+//        }
                 
     }
 }
+
