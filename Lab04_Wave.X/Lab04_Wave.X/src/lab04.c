@@ -109,7 +109,7 @@ void main_loop()
       
     while(TRUE) {   
         
-//        if(currentTime >= getSinePeriodTime(sineWaveFrequency_Hz)){
+//        if(currentTime >= getSinePeriodTime(sineWaveFrequency_Hz)){         // not nessesary for actual implementation
 //            
 //            currentTime = 0;        // reset current time, because one sine period is over 
 //        }
